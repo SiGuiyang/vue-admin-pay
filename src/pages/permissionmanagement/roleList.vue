@@ -169,10 +169,10 @@ export default {
       }
       params.id = this.id
       console.log(this.$refs.tree.getCheckedNodes(true))
-      // givePermission(params).then(data => {
-      //   this.roleList()
-      //   this.permission = false
-      // })
+      givePermission(params).then(data => {
+        this.roleList()
+        this.permission = false
+      })
     }
   }
 }
