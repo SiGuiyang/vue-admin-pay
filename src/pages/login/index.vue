@@ -126,7 +126,10 @@ $light_gray:#eee;
   position: fixed;
   height: 100%;
   width: 100%;
-  background-color: $bg;
+  background-image: url(~@/assets/login/bg_v2.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
   .login-form {
     position: absolute;
     left: 0;

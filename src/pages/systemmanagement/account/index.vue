@@ -1,12 +1,10 @@
 <template>
   
 </template>
+
 <script>
 export default {
-  name: 'orderList'
+  name: 'accountList'
 }
 </script>
 
-<style lang="sass" scoped>
-
-</style>

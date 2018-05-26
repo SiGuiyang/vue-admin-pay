@@ -1,12 +1,9 @@
 <template>
   
 </template>
+
 <script>
 export default {
-  name: 'orderList'
+  name: 'orderReview'
 }
 </script>
-
-<style lang="sass" scoped>
-
-</style>

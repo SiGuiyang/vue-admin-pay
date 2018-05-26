@@ -1,7 +1,7 @@
 {
-  "name": "vue-music-admin",
+  "name": "vue-admin-pay",
   "version": "1.1.0",
-  "description": "音乐后台系统",
+  "description": "支付系统平台",
   "author": "siguiyang1992@outlook.com",
   "license": "MIT",
   "scripts": {
@@ -14,7 +14,8 @@
   "keywords": [
     "vue",
     "element-ui",
-    "admin"
+    "admin",
+    "pay"
   ],
   "dependencies": {
     "axios": "0.17.1",
