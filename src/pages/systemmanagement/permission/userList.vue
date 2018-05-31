@@ -64,7 +64,7 @@
       </el-table-column>
     </el-table>
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.offset" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.pageNum" :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -97,8 +97,8 @@ export default {
       saveOrUpdate: false,
       saveOrUpdateTitle: '编辑',
       listQuery: {
-        offset: 0,
-        limit: 20,
+        pageNum: 1,
+        pageSize: 20,
         importance: undefined,
         username: undefined,
         type: undefined,
@@ -132,15 +132,15 @@ export default {
       }
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val
+      this.listQuery.pageSize = val
       this.userList()
     },
     handleCurrentChange(val) {
-      this.listQuery.offset = val
+      this.listQuery.pageNum = val
       this.userList()
     },
     handleFilter() {
-      this.listQuery.offset = 0
+      this.listQuery.pageNum = 1
       this.userList()
     },
     handleCreate() {

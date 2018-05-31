@@ -9,7 +9,7 @@ export default {
     everydaytradeAmout: '每日交易金额记录',
     statisticchat: '交易图表',
     channelmanagement: '渠道管理',
-    channelindex: '通道列表',
+    channelIndex: '通道列表',
     financemanagement: '财务管理',
     tradeFlow: '交易流水',
     refundFlow: '退款流水',
@@ -64,6 +64,7 @@ export default {
     editPermission: '权限设置',
     dynamicTips1: '固定表头, 按照表头顺序排序',
     dynamicTips2: '不固定表头, 按照点击顺序排序',
+    pleaseSelect: '请选择',
     dragTips1: '默认顺序',
     dragTips2: '拖拽后顺序',
     title: '标题',
@@ -85,7 +86,26 @@ export default {
     draft: '草稿',
     delete: '删除',
     cancel: '取 消',
-    confirm: '确 定'
+    confirm: '确 定',
+    detail: '详情',
+    sequence: '序号',
+    configName: '配置项名称',
+    configValue: '配置项值',
+    description: '说明',
+    version: '版本',
+    merchantName: '商户名',
+    merchantNo: '商户号',
+    mobile: '手机号码',
+    rate: '费率',
+    deduction: '扣量',
+    isDeduction: '是否扣量',
+    idCard: '身份证号码',
+    createTime: '创建时间',
+    bankName: '银行名称',
+    bankCode: '银行编码',
+    bankNum: '银行卡号',
+    payAmount: '支付金额',
+    serverStatus: '交易状态'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',
@@ -112,5 +132,19 @@ export default {
     close: '关闭',
     closeOthers: '关闭其它',
     closeAll: '关闭所有'
+  },
+  bank: {
+    name: '银行名称',
+    code: '银行编码',
+    num: '银行卡号'
+  },
+  time: {
+    createTime: '创建时间'
+  },
+  status: {
+    name: '状态',
+    normal: '正常',
+    disable: '禁用',
+    enable: '启用'
   }
 }

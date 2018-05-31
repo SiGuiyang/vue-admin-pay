@@ -35,7 +35,7 @@ export function getMenuList(query) {
 export function givePermission(query) {
   return request({
     url: '/admin/permission',
-    method: 'get',
+    method: 'post',
     params: query
   })
 }

@@ -118,23 +118,72 @@ export default {
   },
   methods: {
     handleChange(data, node) {
-      console.log(this.$refs.tree.getNode(data.id))
-      console.log(node)
-      let nodes = ''
-      for (let i = 0; i < node.checkedKeys.length; i++) {
-        nodes += node.checkedKeys[i] + ','
-      }
-      for (let i = 0; i < node.halfCheckedKeys.length; i++) {
-        nodes += node.halfCheckedKeys[i] + ','
-      }
-      if (nodes.length > 0) {
-        const params = {}
-        params.id = this.id
-        params.resIds = nodes
-        givePermission(params).then(response => {
+      const currentNode = this.$refs.tree.getNode(data.id)
+
+      if (currentNode.checked) {
+        const router = { id: '', lable: '', children: [] }
+        router.id = currentNode.data.id
+        router.label = currentNode.data.label
+        router.children = this.fetchChild(currentNode.childNodes)
+        // 当前节点是否是顶级节点
+        if (currentNode.level !== 1) {
+          const parent = { id: '', label: '', children: [] }
+          parent.id = currentNode.parent.data.id
+          parent.label = currentNode.parent.data.label
+          parent.children.push(router)
+          // 当前节点的父节点是否是顶级节点
+          if (currentNode.parent.level !== 1) {
+            // 此处处理防止顶级节点为空，只有子节点的现象
+            const temp = this.fetchParent(currentNode.parent)
+            temp.children.push(parent)
+            temp.roleId = this.id
+            console.log(JSON.stringify(temp))
+            givePermission({ requestModel: encodeURIComponent(JSON.stringify(temp)) }).then(response => {
+
+            })
+            return
+          } else {
+            parent.roleId = this.id
+            givePermission({ requestModel: encodeURIComponent(JSON.stringify(parent)) }).then(response => {
+
+            })
+            return
+          }
+        }
+        router.roleId = this.id
+        givePermission({ requestModel: encodeURIComponent(JSON.stringify(router)) }).then(response => {
 
         })
       }
+      console.log(this.router)
+    },
+    fetchChild(nodes, routers = []) {
+      // 迭代遍历子节点
+      for (let i = 0; i < nodes.length; i++) {
+        const router = {}
+        if (nodes[i].checked) {
+          router.id = nodes[i].data.id
+          router.label = nodes[i].data.label
+          if (nodes[i].childNodes.length > 0) {
+            const children = []
+            router.children = this.fetchChild(nodes[i].childNodes, children)
+          }
+        }
+        routers.push(router)
+      }
+      return routers
+    },
+    fetchParent(node, routers = []) {
+      // 迭代遍历父节点
+      const router = { id: '', label: '', children: [] }
+      if (node.level !== 1) {
+        router.id = node.parent.data.id
+        router.label = node.parent.data.label
+        const children = []
+        this.fetchParent(node.parent, children)
+        routers.push(router)
+      }
+      return routers
     },
     roleList() {
       this.listLoading = true

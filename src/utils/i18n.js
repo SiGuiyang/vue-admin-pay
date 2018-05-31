@@ -8,7 +8,3 @@ export function generateTitle(title) {
   }
   return title
 }
-
-export function generateName(title) {
-  return this.$t(title)
-}
