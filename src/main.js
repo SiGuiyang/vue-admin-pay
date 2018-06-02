@@ -15,7 +15,6 @@ import i18n from './lang' // Internationalization
 import './icons' // icon
 import './errorLog'// error log
 import './permission' // permission control
-import '@/utils/global'
 
 import * as filters from './filters' // global filters
 

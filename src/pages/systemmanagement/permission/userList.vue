@@ -20,46 +20,38 @@
       style="width: 100%">
       <el-table-column align="center" :label="$t('table.id')" width="55">
         <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
+          <span>{{scope.row.userId}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120px" align="center" label="用户名">
+      <el-table-column width="120px" align="center" :label="$t('table.username')">
         <template slot-scope="scope">
           <span>{{scope.row.username}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120px" align="center" label="手机号码">
+      <el-table-column width="120px" align="center" :label="$t('table.mobile')">
         <template slot-scope="scope">
           <span>{{scope.row.mobile}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120px" align="center" label="角色">
+      <el-table-column width="120px" align="center" :label="$t('table.roleName')">
         <template slot-scope="scope">
           <span>{{scope.row.roleName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="状态">
+      <el-table-column align="center" :label="$t('status.name')">
         <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.serverStatus === 2">
-            <span>{{scope.row.serverStatus | userStatus}}</span>
-          </el-tag>
-
-          <el-tag type="danger" v-if="scope.row.serverStatus === 4">
-            <span>{{scope.row.serverStatus | userStatus}}</span>
-          </el-tag>
+          <el-tag :type="scope.row.serverStatus | userStatus">{{scope.row.serverStatus | userStatusDescription}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间">
+      <el-table-column align="center" :label="$t('table.createTime')">
         <template slot-scope="scope">
           <span>{{scope.row.createTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('table.actions')" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>
-          <el-button type="success" size="mini" @click="handleDelete(scope.row,'published')">{{$t('table.publish')}}
-          </el-button>
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>          
         </template>
       </el-table-column>
     </el-table>
@@ -68,24 +60,75 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="saveOrUpdateTitle" :visible.sync="saveOrUpdate" center width="30%">
-      <span>需要注意的是内容是默认不居中的</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="saveOrUpdate = false">取 消</el-button>
-        <el-button type="primary" @click="saveOrUpdate = false">确 定</el-button>
-      </span>
+    <el-dialog :title="saveOrUpdateTitle" :visible.sync="saveOrUpdate" center width="60%">
+      <el-form :model="theForm" ref="theForm" label-width="120px">
+        <el-form-item prop="username" :label="$t('table.username')">
+          <el-input v-model="theForm.username"></el-input>
+        </el-form-item>
+        <el-form-item prop="password" :label="$t('login.password')">
+          <el-input v-model="theForm.password" :disabled="disabled"></el-input>
+        </el-form-item>
+        <el-form-item prop="mobile" :label="$t('table.mobile')">
+          <el-input v-model="theForm.mobile"></el-input>
+        </el-form-item>
+        <el-form-item prop="roleId" :label="$t('table.roleName')">
+          <el-radio-group v-model="theForm.roleId" size="small">
+            <el-radio-button v-for="role in roles" :key="role.id" :label="role.id">{{role.roleName}}</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item prop="serverStatus" :label="$t('status.name')">
+          <el-select v-model="theForm.serverStatus" :placeholder="$t('status.name')">
+            <el-option v-for="status in userStatus" :key="status.id" :label="status.name" :value="status.value"></el-option>              
+          </el-select>
+        </el-form-item>
+
+        <el-form-item prop="age" :label="$t('table.age')">
+          <el-input v-model="theForm.age"></el-input>
+        </el-form-item>
+
+        <el-form-item prop="gender" :label="$t('table.gender')">
+          <el-radio-group v-model="theForm.gender" size="small">
+            <el-radio-button label="M">男</el-radio-button>
+            <el-radio-button label="F">女</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item prop="birthday" :label="$t('table.birthday')">
+          <el-date-picker type="date" value-format="yyyy-MM-dd HH:mm:ss" :placeholder="$t('table.birthday')" v-model="theForm.birthday" style="width: 100%;"></el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm">{{immediatelyCreate}}</el-button>
+          <el-button @click="handleReset">{{this.$t('table.reset')}}</el-button>
+        </el-form-item>
+      </el-form>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserList } from '@/api/permission'
+import { getUserList, getUserInfo, addOrModifyUser, getRoles } from '@/api/permission'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
+const statusMap = {
+  2: 'success',
+  4: 'danger',
+  user: {
+    2: '正常',
+    4: '注销'
+  }
+}
 export default {
   name: 'userList',
   directives: {
     waves
+  },
+  filters: {
+    userStatus(status) {
+      return statusMap[status]
+    },
+    userStatusDescription(status) {
+      return statusMap.user[status]
+    }
+
   },
   data() {
     return {
@@ -94,8 +137,7 @@ export default {
       total: null,
       queryTime: '',
       listLoading: true,
-      saveOrUpdate: false,
-      saveOrUpdateTitle: '编辑',
+      id: '',
       listQuery: {
         pageNum: 1,
         pageSize: 20,
@@ -106,11 +148,22 @@ export default {
         beginTime: '',
         endTime: ''
       },
-      downloadLoading: false
+      theForm: {},
+      roles: [],
+      userStatus: [{ id: 1, name: '请选择', value: '' }, { id: 2, name: '正常', value: 2 }, { id: 3, name: '注销', value: 4 }],
+      isIndeterminate: true,
+      saveOrUpdate: false,
+      disabled: false,
+      saveOrUpdateTitle: '编辑',
+      immediatelyCreate: '',
+      password: '',
+      downloadLoading: false,
+      roleCodes: []
     }
   },
   created() {
     this.userList()
+    this.handlerRoles()
   },
   methods: {
     userList() {
@@ -119,6 +172,15 @@ export default {
         this.list = response.record
         this.total = response.total
         this.listLoading = false
+      })
+    },
+    handlerRoles() {
+      getRoles().then(response => {
+        if (response.code === 200) {
+          this.roles = response.data
+        } else {
+          this.$message.error(response.msg)
+        }
       })
     },
     getTime(val) {
@@ -144,14 +206,47 @@ export default {
       this.userList()
     },
     handleCreate() {
-
+      this.theForm = {}
+      this.disabled = false
+      this.immediatelyCreate = this.$t('table.immediatelyCreate')
+      this.saveOrUpdate = true
     },
     handleDownload() {
     },
-    handleUpdate() {
-      this.saveOrUpdate = true
+    handleUpdate(data) {
+      const params = {}
+      params.id = data.userId
+      getUserInfo(params).then(response => {
+        if (response.code === 200) {
+          this.theForm = response.data
+          this.theForm.id = data.userId
+          this.password = this.theForm.password
+          this.saveOrUpdate = true
+          this.disabled = true
+          this.immediatelyCreate = this.$t('table.submit')
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
     },
-    handleDelete() {}
+    submitForm() {
+      addOrModifyUser(this.theForm).then(response => {
+        if (response.code === 200) {
+          this.$message({
+            type: 'success',
+            message: response.msg
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+        this.saveOrUpdate = false
+        this.userList()
+      })
+    },
+    handleReset() {
+      this.theForm = {}
+      this.theForm.password = this.password
+    }
   }
 }
 </script>

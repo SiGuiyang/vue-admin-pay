@@ -61,6 +61,9 @@ export default {
       '由于我在使用时它只有vue@1版本，而且和mockjs不兼容，所以自己改造了一下，如果大家要使用的话，优先还是使用官方版本。'
   },
   table: {
+    age: '年龄',
+    gender: '性别',
+    birthday: '生日',
     editPermission: '权限设置',
     dynamicTips1: '固定表头, 按照表头顺序排序',
     dynamicTips2: '不固定表头, 按照点击顺序排序',
@@ -70,11 +73,14 @@ export default {
     title: '标题',
     importance: '重要性',
     type: '类型',
-    remark: '点评',
+    remark: '备注',
+    immediatelyCreate: '立即创建',
     search: '搜索',
     add: '添加',
     export: '导出',
     reviewer: '审核人',
+    reset: '重置',
+    submit: '提交',
     id: '序号',
     date: '时间',
     author: '作者',
@@ -82,6 +88,7 @@ export default {
     status: '状态',
     actions: '操作',
     edit: '编辑',
+    modifyCache: '更新配置项缓存',
     publish: '发布',
     draft: '草稿',
     delete: '删除',
@@ -105,7 +112,10 @@ export default {
     bankCode: '银行编码',
     bankNum: '银行卡号',
     payAmount: '支付金额',
-    serverStatus: '交易状态'
+    tradeStatus: '交易状态',
+    roleName: '角色名称',
+    roleCode: '角色代码',
+    username: '用户名'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

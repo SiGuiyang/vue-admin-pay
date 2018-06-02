@@ -31,3 +31,13 @@ export function modifyConfig(query) {
     params: query
   })
 }
+
+/**
+ * 更新redis配置项爱你个缓存
+ */
+export function modifyConfigCache() {
+  return request({
+    url: '/admin/config/cache',
+    method: 'get'
+  })
+}

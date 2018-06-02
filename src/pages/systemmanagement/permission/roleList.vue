@@ -1,7 +1,7 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="用户名" v-model="listQuery.username">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" :placeholder="$t('table.roleName')" v-model="listQuery.username">
       </el-input>
       <el-button type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}</el-button>
       <el-button style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('table.add')}}</el-button>
@@ -14,17 +14,31 @@
           <span>{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120px" align="center" label="角色名称">
+      <el-table-column width="120px" align="center" :label="$t('table.roleName')">
         <template slot-scope="scope">
           <span>{{scope.row.roleName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120px" align="center" label="角色代码">
+      <el-table-column width="120px" align="center" :label="$t('table.roleCode')">
         <template slot-scope="scope">
           <span>{{scope.row.roleCode}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间">
+
+      <el-table-column width="220px" align="center" :label="$t('table.remark')">
+        <template slot-scope="scope">
+          <span>{{scope.row.remark}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="120px" align="center" :label="$t('status.name')">
+        <template slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.serverStatus == 1">正常</el-tag>
+          <el-tag type="danger" v-if="scope.row.serverStatus == 0">禁用</el-tag>        
+        </template>
+      </el-table-column>
+
+      <el-table-column width="160px" align="center" :label="$t('time.createTime')">
         <template slot-scope="scope">
           <span>{{scope.row.createTime}}</span>
         </template>
@@ -32,9 +46,7 @@
       <el-table-column align="center" :label="$t('table.actions')" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="handlePermissionDialog(scope.row)">{{$t('table.editPermission')}}</el-button>
-          <el-button type="primary" size="small" @click="handleUpdate(scope.row)">{{$t('table.edit')}}</el-button>
-          <el-button type="success" size="small" @click="handleDelete(scope.row,'published')">{{$t('table.publish')}}
-          </el-button>
+          <el-button type="primary" size="small" @click="handleModify(scope.row)">{{$t('table.edit')}}</el-button>          
         </template>
       </el-table-column>
     </el-table>
@@ -43,12 +55,31 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="saveOrUpdateTitle" :visible.sync="saveOrUpdate" center width="30%">
-      <span>需要注意的是内容是默认不居中的</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="saveOrUpdate = false">取 消</el-button>
-        <el-button type="primary" @click="saveOrUpdate = false">确 定</el-button>
-      </span>
+    <el-dialog :title="saveOrModifyTitle" :visible.sync="saveOrModify" center width="30%">
+      <el-form :model="theForm" ref="theForm" label-width="100px">
+        <el-form-item :label="$t('table.roleName')" prop="roleName">
+          <el-input v-model="theForm.roleName"></el-input>
+        </el-form-item>
+        <el-form-item :label="$t('table.roleCode')" prop="roleCode">
+          <el-select v-model="theForm.roleCode" :placeholder="$t('table.pleaseSelect')">
+            <el-option v-for="roleCode in rolecodes" :key="roleCode.id" :label="roleCode.description" :value="roleCode.configValue"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item :label="$t('status.name')" prop="roleCode">
+          <el-select v-model="theForm.serverStatus" :placeholder="$t('table.pleaseSelect')">
+            <el-option v-for="status in serverStatus" :key="status.id" :label="status.name" :value="status.id"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item :label="$t('table.remark')" prop="remark">
+          <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" v-model="theForm.remark"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm">{{this.$t('table.immediatelyCreate')}}</el-button>
+          <el-button @click="theForm = {}">{{this.$t('table.reset')}}</el-button>
+        </el-form-item>
+      </el-form>
     </el-dialog>
     <el-dialog title="权限" :visible.sync="permission" center width="40%" height="50%">
       <el-tree
@@ -71,7 +102,7 @@
 </template>
 
 <script>
-import { getRoleList, getMenuList, givePermission } from '@/api/permission'
+import { getRoleList, getMenuList, givePermission, getRoleInfo, getRoleCodes, addRole } from '@/api/permission'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
   name: 'userList',
@@ -93,8 +124,8 @@ export default {
       permission: false,
       defaultExpandedKeys: [],
       defaultCheckedKeys: [],
-      saveOrUpdate: false,
-      saveOrUpdateTitle: '编辑',
+      saveOrModify: false,
+      saveOrModifyTitle: '编辑',
       listQuery: {
         pageNum: 1,
         pageSize: 20,
@@ -105,18 +136,31 @@ export default {
         beginTime: '',
         endTime: ''
       },
+      rolecodes: [],
+      serverStatus: [{ id: 1, name: '正常' }, { id: 0, name: '禁用' }],
       router: {
         id: undefined,
         label: undefined,
         children: []
       },
+      theForm: {},
       downloadLoading: false
     }
   },
   created() {
     this.roleList()
+    this.initRoleCodes()
   },
   methods: {
+    initRoleCodes() {
+      getRoleCodes().then(response => {
+        if (response.code === 200) {
+          this.rolecodes = response.data
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
+    },
     handleChange(data, node) {
       console.log(this.$refs.tree.getNode(data.id))
       console.log(node)
@@ -132,7 +176,14 @@ export default {
         params.id = this.id
         params.resIds = nodes
         givePermission(params).then(response => {
-
+          if (response.code === 200) {
+            this.$message({
+              type: 'success',
+              message: response.msg
+            })
+          } else {
+            this.$message.error(response.msg)
+          }
         })
       }
     },
@@ -157,10 +208,36 @@ export default {
       this.roleList()
     },
     handleCreate() {
-
+      this.saveOrModify = true
+      this.saveOrModifyTitle = this.$t('table.add')
+      this.theForm = {}
     },
-    handleUpdate() {
-      this.saveOrUpdate = true
+    submitForm() {
+      addRole(this.theForm).then(response => {
+        if (response.code === 200) {
+          this.$message({
+            type: 'success',
+            message: response.msg
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+        this.saveOrModify = false
+        this.roleList()
+      })
+    },
+    handleModify(data) {
+      this.saveOrModify = true
+      this.saveOrModifyTitle = this.$t('table.edit')
+      const params = {}
+      params.id = data.id
+      getRoleInfo(params).then(response => {
+        if (response.code === 200) {
+          this.theForm = response.data
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
     },
     handleDelete() { },
     handlePermissionDialog(data) {

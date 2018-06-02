@@ -5,6 +5,7 @@
       </el-input>
       <el-button type="primary" v-waves icon="el-icon-search" @click="handleSearch">{{$t('table.search')}}</el-button>
       <el-button style="margin-left: 10px;" @click="handleDetail" type="primary" icon="el-icon-edit">{{$t('table.detail')}}</el-button>
+      <el-button style="margin-left: 10px;" @click="handleConfigCache" type="danger" icon="el-icon-info">{{$t('table.modifyCache')}}</el-button>
     </div>
     <el-table ref="configTable" 
       :key='tableKey' 
@@ -101,7 +102,7 @@
 </template>
 
 <script>
-import { getConfigList, getConfigInfo, modifyConfig } from '@/api/config'
+import { getConfigList, getConfigInfo, modifyConfig, modifyConfigCache } from '@/api/config'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
   name: 'configIndex',
@@ -175,6 +176,30 @@ export default {
         } else {
           this.$message.error(response.msg)
         }
+      })
+    },
+    handleConfigCache() {
+      this.$confirm('此处操作将更新redis配置缓存，请慎重操作！！！', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+        modifyConfigCache().then(response => {
+          if (response.code === 200) {
+            this.$message({
+              type: 'success',
+              message: response.msg
+            })
+          } else {
+            this.$message.error(response.msg)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
     },
     updateConfig() {
