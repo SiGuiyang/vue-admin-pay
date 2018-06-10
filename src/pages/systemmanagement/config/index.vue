@@ -55,6 +55,12 @@
           <span>{{scope.row.version}}</span>
         </template>
       </el-table-column>
+
+      <el-table-column align="center" fixed="right" :label="$t('table.actions')">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="handleConfigDetail(scope.row)">{{$t('table.edit')}}</el-button>      
+        </template>
+      </el-table-column>
     </el-table>
 
     <div class="pagination-container">
@@ -169,6 +175,19 @@ export default {
         return
       }
       getConfigInfo(this.tableSelected[0]).then(response => {
+        if (response.code === 200) {
+          this.saveOrUpdate = true
+          this.config = response.data
+          console.log(this.config)
+        } else {
+          this.$message.error(response.msg)
+        }
+      })
+    },
+    handleConfigDetail(data) {
+      const params = {}
+      params.id = data.id
+      getConfigInfo(params).then(response => {
         if (response.code === 200) {
           this.saveOrUpdate = true
           this.config = response.data

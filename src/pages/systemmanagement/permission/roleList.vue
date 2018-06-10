@@ -153,7 +153,8 @@ export default {
   },
   methods: {
     initRoleCodes() {
-      getRoleCodes().then(response => {
+      const params = {}
+      getRoleCodes(params).then(response => {
         if (response.code === 200) {
           this.rolecodes = response.data
         } else {

@@ -11,6 +11,7 @@ function filterAsyncRouter(asyncRouterMap, routers = []) {
     const meta = {}
     router.name = asyncRouterMap[i].name
     router.path = asyncRouterMap[i].path
+    router.hidden = asyncRouterMap[i].hidden
     if (asyncRouterMap[i].redirect && asyncRouterMap[i].redirect !== undefined) {
       router.redirect = asyncRouterMap[i].redirect
     }
@@ -45,6 +46,7 @@ const permission = {
       return new Promise(resolve => {
         const { routers } = data.record
         const accessedRouters = filterAsyncRouter(routers)
+        console.log(accessedRouters)
         // const accessedRouters = asyncRouterMap
         commit('SET_ROUTERS', accessedRouters)
         resolve()

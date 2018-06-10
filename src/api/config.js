@@ -35,9 +35,10 @@ export function modifyConfig(query) {
 /**
  * 更新redis配置项爱你个缓存
  */
-export function modifyConfigCache() {
+export function modifyConfigCache(query) {
   return request({
     url: '/admin/config/cache',
-    method: 'get'
+    method: 'get',
+    params: query
   })
 }

@@ -86,18 +86,20 @@ export function addRole(query) {
 /**
  * 获取角色代码
  */
-export function getRoleCodes() {
+export function getRoleCodes(query) {
   return request({
     url: '/admin/getRoleCode',
-    method: 'get'
+    method: 'get',
+    params: query
   })
 }
 /**
  * 获取全部角色
  */
-export function getRoles() {
+export function getRoles(query) {
   return request({
     url: '/admin/permission/roles',
-    method: 'get'
+    method: 'get',
+    params: query
   })
 }

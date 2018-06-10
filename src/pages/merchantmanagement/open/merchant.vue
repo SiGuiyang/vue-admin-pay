@@ -1,12 +1,11 @@
 <template>
-  <div class="">
-    <el-steps :active="2" align-center>
+  <div class="app-container calendar-list-container">
+    <el-steps :active="active" align-center>
       <el-step title="商户基本信息"></el-step>
       <el-step title="配置商户费率"></el-step>
       <el-step title="配置商户扣量"></el-step>
       <el-step title="配置商户支付渠道"></el-step>
     </el-steps>
-
     <transition name="fade">
       <router-view class="view"></router-view>
     </transition>
@@ -25,7 +24,7 @@ export default {
   name: 'openMerchant',
   data() {
     return {
-      active: 0,
+      active: 1,
       isRouter: false,
       preview: true,
       preStep: false,
@@ -44,7 +43,7 @@ export default {
       this.goStep(this.step)
     },
     handleNextStep: function() {
-      this.$router.push('merchantmanagement/open/merchantInfo')
+      this.$router.push('/merchantmanagement/merchant/info')
       var _this = this
       setTimeout(function() {
         if (_this.isRouter) {

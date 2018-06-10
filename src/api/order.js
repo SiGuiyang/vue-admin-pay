@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 
-export function orderDetail(options) {
+export function orderDetail(query) {
   return request({
     url: '/article/list',
     method: 'get',
-    params: options
+    params: query
   })
 }

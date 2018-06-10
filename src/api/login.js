@@ -12,10 +12,11 @@ export function login(username, password) {
   })
 }
 
-export function logout() {
+export function logout(query) {
   return request({
     url: '/admin/logout',
-    method: 'post'
+    method: 'post',
+    params: query
   })
 }
 
