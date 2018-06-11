@@ -430,6 +430,9 @@ export default {
           this.$message.error(response.msg)
         }
       })
+    },
+    submitPayForm() {
+
     }
   }
 }
