@@ -50,11 +50,6 @@
           <span>{{scope.row.createTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" :label="$t('table.updateTime')">
-        <template slot-scope="scope">
-          <span>{{scope.row.updateTime}}</span>
-        </template>
-      </el-table-column>
       <el-table-column align="center" fixed="right" :label="$t('table.actions')">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleChannelCenterInfo(scope.row)">{{$t('table.edit')}}</el-button>

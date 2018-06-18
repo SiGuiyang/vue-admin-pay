@@ -1,30 +1,27 @@
 <template>
   <div class="app-container calendar-list-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" :placeholder="$t('table.merchantName')" v-model="listQuery.merchantName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" :placeholder="$t('table.merchantNo')" v-model="listQuery.merchantNo">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" :placeholder="$t('table.bankName')" v-model="listQuery.bankName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" :placeholder="$t('table.orderCode')" v-model="listQuery.orderCode">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" :placeholder="$t('table.bankNum')" v-model="listQuery.bankNum">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" :placeholder="$t('table.merchantOrderCode')" v-model="listQuery.merchantOrderCode">
       </el-input>
 
-      <el-select clearable style="width: 90px" v-model="listQuery.serverStatus" :placeholder="$t('status.name')">
-        <el-option v-for="item in serverStatusArray" :key="item.id" :label="item.name" :value="item.name">
+      <el-select clearable style="width: 120px" v-model="listQuery.payStatus" :placeholder="$t('table.payStatus')">
+        <el-option v-for="item in payStatusArray" :key="item.id" :label="item.name" :value="item.name">
         </el-option>
       </el-select>
-      <el-date-picker style="width: 360px;"        
-        v-model="queryTime"
-        type="datetimerange"
-        format="yyyy-MM-dd"
-        @change="getTime"
-        range-separator="至" 
-        start-placeholder="开始日期" 
-        end-placeholder="结束日期">
+
+      <el-select clearable style="width: 120px" v-model="listQuery.notificationStatus" :placeholder="$t('table.notificationStatus')">
+        <el-option v-for="item in notificationStatusArray" :key="item.id" :label="item.name" :value="item.name">
+        </el-option>
+      </el-select>
+      <el-date-picker style="width: 360px;" v-model="queryTime" type="datetimerange" format="yyyy-MM-dd" @change="getTime" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
       </el-date-picker>
       <el-button type="primary" v-waves icon="el-icon-search" @click="handleSearch">{{$t('table.search')}}</el-button>
     </div>
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="加载中。。。" border fit highlight-current-row
-      style="width: 100%">
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="加载中。。。" border fit highlight-current-row style="width: 100%">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column width="150px" align="center" :label="$t('table.merchantName')">
@@ -50,9 +47,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="80px" align="center" :label="$t('table.noticationStatus')">
+      <el-table-column width="180px" align="center" :label="$t('table.payBody')">
         <template slot-scope="scope">
-          <span>{{scope.row.serverStatus}}</span>
+          <span>{{scope.row.payBody}}</span>
+        </template>
+      </el-table-column>
+      
+
+      <el-table-column width="80px" align="center" :label="$t('table.notificationStatus')">
+        <template slot-scope="scope">
+          <span>{{scope.row.notificationStatus}}</span>
         </template>
       </el-table-column>
 
@@ -108,16 +112,17 @@ export default {
         pageNum: 1,
         pageSize: 20,
         importance: undefined,
-        meerchantName: undefined,
-        bankName: undefined,
-        bankNum: undefined,
-        serverStatus: undefined,
+        meerchantNo: undefined,
+        orderCode: undefined,
+        merchantOrderCode: undefined,
+        notificationStatus: undefined,
         idCard: undefined,
         sort: '+id',
         beginTime: '',
         endTime: ''
       },
-      serverStatusArray: [{ id: 0, name: '开户中' }, { id: 1, name: '已销户' }, { id: 2, name: '正常' }]
+      notificationStatusArray: [{ id: 0, name: '未下发' }, { id: 1, name: '已下发' }, { id: 2, name: '已通知' }],
+      payStatusArray: [{ id: 0, name: '已创建' }, { id: 1, name: '已取消' }, { id: 2, name: '成功' }, { id: 3, name: '失败' }]
     }
   },
   created() {

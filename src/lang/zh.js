@@ -134,7 +134,7 @@ export default {
     secureKey: '密钥',
     currentNode: '当前节点',
     currentEnable: '是否可用',
-    noticationStatus: '通知状态',
+    notificationStatus: '通知状态',
     tradeCode: '交易流水号',
     tradeAmount: '交易金额',
     IdCardFrond: '身份证正面',
@@ -143,7 +143,12 @@ export default {
     publicKey: '共钥',
     privateKey: '私钥',
     payChannelCenter: '支付中心配置',
-    merchantPay: '支付配置'
+    merchantPay: '支付配置',
+    orderCode: '订单号',
+    merchantOrderCode: '商户订单号',
+    payType: '支付方式',
+    payStatus: '订单状态',
+    payBody: '购买主体'
   },
   dashboard: {
     merchantCount: '平台商户总数',

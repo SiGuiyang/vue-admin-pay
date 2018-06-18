@@ -1,8 +1,10 @@
 import request from '@/utils/request'
-
-export function orderDetail(query) {
+/**
+ * 订单列表
+ */
+export function queryOrderList(query) {
   return request({
-    url: '/article/list',
+    url: '/admin/order/list',
     method: 'get',
     params: query
   })
