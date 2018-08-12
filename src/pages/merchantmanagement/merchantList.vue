@@ -233,7 +233,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitPayForm">{{this.$t('table.immediatelyCreate')}}</el-button>
-          <el-button @click="modifyMerchantVisible = false">{{this.$t('table.close')}}</el-button>
+          <el-button @click="modifyMerchantPayChannelVisible = false">{{this.$t('table.close')}}</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -242,7 +242,13 @@
 </template>
 <script>
 import { parseTime } from '@/utils'
-import { merchantList, queryMerchantInfo, modifyMerchant, deleteMerchant, queryBanks } from '@/api/merchant'
+import {
+  merchantList,
+  queryMerchantInfo,
+  modifyMerchant,
+  deleteMerchant,
+  queryBanks
+} from '@/api/merchant'
 import { queryChannelEnable } from '@/api/channel'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
@@ -270,7 +276,12 @@ export default {
         beginTime: '',
         endTime: ''
       },
-      serverStatusArray: [{ id: 0, name: '开户中' }, { id: 1, name: '已销户' }, { id: 2, name: '审核完成' }, { id: 3, name: '审核失败' }],
+      serverStatusArray: [
+        { id: 0, name: '开户中' },
+        { id: 1, name: '已销户' },
+        { id: 2, name: '审核完成' },
+        { id: 3, name: '审核失败' }
+      ],
       highQualities: [{ id: 0, name: '非VIP' }, { id: 1, name: 'VIP' }],
       modifyMerchantTitle: '',
       modifyMerchantVisible: false,
@@ -362,28 +373,30 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
         center: true
-      }).then(() => {
-        const params = {}
-        params.id = data.id
-        params.serverStatus = 2
-        modifyMerchant(params).then(response => {
-          if (response.code === 200) {
-            this.modifyMerchantVisible = false
-            this.$message({
-              type: 'success',
-              message: response.msg
-            })
-            this.fetchList()
-          } else {
-            this.$message.error(response.msg)
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
       })
+        .then(() => {
+          const params = {}
+          params.id = data.id
+          params.serverStatus = 2
+          modifyMerchant(params).then(response => {
+            if (response.code === 200) {
+              this.modifyMerchantVisible = false
+              this.$message({
+                type: 'success',
+                message: response.msg
+              })
+              this.fetchList()
+            } else {
+              this.$message.error(response.msg)
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     },
     handleMerchantPayChannel(data) {
       this.modifyMerchantPayChannelVisible = true
@@ -394,27 +407,29 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
         center: true
-      }).then(() => {
-        const params = {}
-        params.id = data.id
-        deleteMerchant(params).then(response => {
-          if (response.code === 200) {
-            this.modifyMerchantVisible = false
-            this.$message({
-              type: 'success',
-              message: response.msg
-            })
-            this.fetchList()
-          } else {
-            this.$message.error(response.msg)
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
       })
+        .then(() => {
+          const params = {}
+          params.id = data.id
+          deleteMerchant(params).then(response => {
+            if (response.code === 200) {
+              this.modifyMerchantVisible = false
+              this.$message({
+                type: 'success',
+                message: response.msg
+              })
+              this.fetchList()
+            } else {
+              this.$message.error(response.msg)
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     },
     submitForm() {
       modifyMerchant(this.theForm).then(response => {
@@ -432,7 +447,6 @@ export default {
       })
     },
     submitPayForm() {
-
     }
   }
 }

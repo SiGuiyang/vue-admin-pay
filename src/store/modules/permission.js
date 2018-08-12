@@ -47,7 +47,6 @@ const permission = {
         const { routers } = data.record
         const accessedRouters = filterAsyncRouter(routers)
         console.log(accessedRouters)
-        // const accessedRouters = asyncRouterMap
         commit('SET_ROUTERS', accessedRouters)
         resolve()
       })
